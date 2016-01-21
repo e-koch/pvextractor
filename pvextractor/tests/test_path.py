@@ -6,7 +6,7 @@ from numpy.testing import assert_allclose
 
 from astropy import units as u
 from astropy.io import fits
-from astropy.coordinates import Galactic, ICRS
+from astropy.coordinates import Galactic, ICRS, SkyCoord
 from astropy.wcs import WCS
 
 from ..geometry import Path
@@ -175,3 +175,11 @@ def test_sample_polygons():
     # ax.set_ylim(-5., 5)
     # fig.savefig('test_poly.png')
 
+
+def test_catch_scalar_coordinates():
+
+    gal = Galactic(49.4 * u.deg, -0.4 * u.deg)
+    skycoord = SkyCoord(49.4 * u.deg, -0.4 * u.deg)
+
+    with pytest.raises(ValueError):
+        path_gal = Path([gal, skycoord])
