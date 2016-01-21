@@ -6,7 +6,7 @@ import numpy as np
 
 from astropy.wcs import WCSSUB_CELESTIAL
 from astropy.wcs.utils import wcs_to_celestial_frame
-from astropy.coordinates import BaseCoordinateFrame
+from astropy.coordinates import BaseCoordinateFrame, SkyCoord
 
 from ..utils.wcs_utils import get_spatial_scale
 
@@ -94,6 +94,14 @@ class Path(object):
 
     def __init__(self, xy_or_coords, width=None):
         if isinstance(xy_or_coords, list):
+
+            for coord in xy_or_coords:
+                if hasattr(coord, "isscalar"):
+                    if coord.isscalar:
+                        raise ValueError("Scalar coordinates are not "
+                                         "supported. Define an Astropy "
+                                         "coordinate object containing an "
+                                         "array of 2 or more coordinates.")
             self._xy = xy_or_coords
             self._coords = None
         elif sys.version_info[0] > 2 and isinstance(xy_or_coords, zip):
